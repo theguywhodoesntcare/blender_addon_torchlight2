@@ -112,6 +112,7 @@ class Bone(object):
                 axisElem = find(elem, "axis")
                 axis = tuple(getVecAttr(axisElem, "xyz"))
                 self.rotation = Quaternion(axis, angle)
+                self.rotation.normalize()
 
             elif elem.tagName == "scale":
                 if elem.hasAttribute("factor"):
