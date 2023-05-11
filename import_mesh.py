@@ -474,7 +474,7 @@ class MeshConverter(object):
         for eb in arm.edit_bones:
             for child in eb.children:
                 if (eb.tail - child.head).magnitude < 5e-4:
-                    child.use_connect = True
+                    child.use_connect = False #"keep offset" anyway
 
         bpy.ops.object.mode_set(mode="OBJECT")
 
