@@ -42,6 +42,7 @@ def create_bones_animation(name, bone_list, trackElements, fps, obj):
     data_path = "pose.bones[\"{:s}\"].{:s}"
 
     ZERO = Vector()
+    DefaultScale = Vector((1.0, 1.0, 1.0))
     QUAT_ID = Quaternion((1.0, 0.0, 0.0, 0.0))
     MAT_AXIS_ROT = Matrix((
         ( 0.0,  1.0,  0.0,  0.0),
@@ -97,6 +98,8 @@ def create_bones_animation(name, bone_list, trackElements, fps, obj):
 
         fcu_loc  = create_fcurves(action, data_path.format(bone_data.name, "location"),            3, bone_data.name)
         fcu_quat = create_fcurves(action, data_path.format(bone_data.name, "rotation_quaternion"), 4, bone_data.name)
+        fcu_scale = create_fcurves(action, data_path.format(bone_data.name, "scale"), 3, bone_data.name)
+        insert_keyframe(fcu_scale, 0, DefaultScale)
 
         trackElem = track_dict.get(bone_data.name)
         if not trackElem:
@@ -104,6 +107,7 @@ def create_bones_animation(name, bone_list, trackElements, fps, obj):
             kf_loc, kf_quat = calcKeyframeData(pose_bone, loc, quat)
             insert_keyframe(fcu_loc,  0, kf_loc)
             insert_keyframe(fcu_quat, 0, kf_quat)
+            insert_keyframe(fcu_scale, 0, DefaultScale)
             continue
 
         keyframeElements = find(trackElem, "keyframes")
@@ -117,6 +121,9 @@ def create_bones_animation(name, bone_list, trackElements, fps, obj):
                     angle = getFloatAttr(elem, "angle")
                     axisElem = find(elem, "axis")
                     axis = tuple(getVecAttr(axisElem, "xyz"))
+                elif elem.tagName == "scale":
+                    kf_scale = Vector(getVecAttr(elem, "xyz"))
+                    insert_keyframe(fcu_scale,  time*fps, kf_scale)
                 else:
                     raise ValueError("Invalid tagname %s" % elem.tagName)
 
