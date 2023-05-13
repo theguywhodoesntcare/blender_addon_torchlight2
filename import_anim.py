@@ -63,6 +63,7 @@ def create_bones_animation(name, bone_list, trackElements, fps, obj):
     ))
 
     def calcKeyframeData(pose_bone, loc, quat):
+        quat.normalize()
         mat_basis = quat.to_matrix().to_4x4()
         mat_basis.translation = loc
         mat_basis = MAT_AXIS_ROT_INV * mat_basis * MAT_AXIS_ROT
@@ -119,9 +120,10 @@ def create_bones_animation(name, bone_list, trackElements, fps, obj):
                 else:
                     raise ValueError("Invalid tagname %s" % elem.tagName)
 
+            quat_local = Quaternion(axis, angle)    
             kf_loc, kf_quat = calcKeyframeData(
                 pose_bone,
                 loc  + translation,
-                quat * Quaternion(axis, angle))
+                quat * quat_local.normalized())
             insert_keyframe(fcu_loc,  time*fps, kf_loc)
             insert_keyframe(fcu_quat, time*fps, kf_quat)

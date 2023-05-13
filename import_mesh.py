@@ -447,7 +447,7 @@ class MeshConverter(object):
             eb.align_roll(quat * VEC_Z)
 
             for child in bone_data.children:
-                create_edit_bones(eb, child, pos, quat)
+                create_edit_bones(eb, child, pos, quat.normalized())
 
         def no_parent(bone): return bone.parent is None
         def no_tag(eb): return not eb.name.startswith("tag")
