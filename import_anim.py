@@ -107,7 +107,6 @@ def create_bones_animation(name, bone_list, trackElements, fps, obj):
             kf_loc, kf_quat = calcKeyframeData(pose_bone, loc, quat)
             insert_keyframe(fcu_loc,  0, kf_loc)
             insert_keyframe(fcu_quat, 0, kf_quat)
-            insert_keyframe(fcu_scale, 0, DefaultScale)
             continue
 
         keyframeElements = find(trackElem, "keyframes")
@@ -122,7 +121,8 @@ def create_bones_animation(name, bone_list, trackElements, fps, obj):
                     axisElem = find(elem, "axis")
                     axis = tuple(getVecAttr(axisElem, "xyz"))
                 elif elem.tagName == "scale":
-                    kf_scale = Vector(getVecAttr(elem, "xyz"))
+                    scale = Vector(getVecAttr(elem, "xyz"))
+                    kf_scale = Vector((scale.y, scale.x, scale.z))
                     insert_keyframe(fcu_scale,  time*fps, kf_scale)
                 else:
                     raise ValueError("Invalid tagname %s" % elem.tagName)
